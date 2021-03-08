@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-    - master
+    - main
     tags-ignore:
     - "*.*.*"
 jobs:
@@ -10,17 +10,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        elm: ["0.19.1"]
         os: [ubuntu-latest, macOS-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: justgook/setup-elm@1.2.0
+    - uses: actions/setup-node@v2
       with:
-        elm-version: ${{ matrix.go }}
+        node-version: '14'
     - uses: actions/checkout@master
-    - name: go test
-      run: "AT=true go test -v -race -coverprofile=coverage.txt -covermode=atomic ./..."
-    - uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.txt
+    - name: npm install
+      run: npm install
+    - name: npm test
+      run: npm test
